@@ -13,6 +13,7 @@ contract fundmetest is Test{
         Fundme = Deployfundme.run();
     }
 
+    
     function testingamount() public view {
         assertEq(Fundme.MINIMUM_USD(), 5e18);
     }
@@ -23,4 +24,5 @@ contract fundmetest is Test{
     // function testpriceconversion() public {
     //     uint256 version = Fundme.get;
     // }
+    
 }
