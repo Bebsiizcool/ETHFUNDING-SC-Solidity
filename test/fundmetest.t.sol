@@ -17,7 +17,7 @@ contract fundmetest is Test{
     function testingamount() public view {
         assertEq(Fundme.MINIMUM_USD(), 5e18);
     }
-    function testowner() public{
+    function testowner() public view{
         assertEq(Fundme.i_owner(), msg.sender);
     }
 
