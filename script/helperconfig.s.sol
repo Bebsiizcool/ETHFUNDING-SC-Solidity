@@ -8,6 +8,9 @@ import {MockV3Aggregator} from "../test/mocks/MockV3Aggregator.sol";
 contract helperconfig is Script{
 
     networkconfig public activeNetworkConfig;
+    uint8 public constant decimals = 8;
+    int256 public constant INTIAL_PRICE = 2000e8;
+
     struct networkconfig{
         address pricefeed;
     }
@@ -36,8 +39,12 @@ contract helperconfig is Script{
     }
 
     function getanvileth() public returns(networkconfig memory){
+
+        if(activeNetworkConfig.pricefeed != address(0)){
+            return activeNetworkConfig;
+        }
         vm.startBroadcast();
-        MockV3Aggregator mockpricefeed = new MockV3Aggregator(18,2000e18);
+        MockV3Aggregator mockpricefeed = new MockV3Aggregator(decimals, INTIAL_PRICE);
         vm.stopBroadcast();
         networkconfig memory anvileth = networkconfig({pricefeed: address(mockpricefeed)});
         return anvileth;

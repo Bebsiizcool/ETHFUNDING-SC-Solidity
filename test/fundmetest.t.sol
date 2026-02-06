@@ -21,8 +21,9 @@ contract fundmetest is Test{
         assertEq(Fundme.i_owner(), msg.sender);
     }
 
-    // function testpriceconversion() public {
-    //     uint256 version = Fundme.get;
-    // }
+    function testpricefeedversionisaccurate() public view{
+        uint256 version = Fundme.getVersion();
+        assertEq(version, 4);
+    }
     
 }
