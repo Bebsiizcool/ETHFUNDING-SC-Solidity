@@ -7,10 +7,16 @@ import {deployfundme} from "../script/deployfundme.s.sol";
 
 contract fundmetest is Test{
     fundme Fundme;
+    address USER = makeAddr("user");
+    uint256 constant SEND_VALUE = 0.1 ether;
+    uint256 constant STARTING_BALANCE = 10 ether;
+
     function setUp() external {
         //  Fundme = new fundme(0x694AA1769357215DE4FAC081bf1f309aDC325306);
         deployfundme Deployfundme = new deployfundme();
         Fundme = Deployfundme.run();
+        vm.deal(USER, STARTING_BALANCE);
+
     }
 
     
@@ -24,6 +30,19 @@ contract fundmetest is Test{
     function testpricefeedversionisaccurate() public view{
         uint256 version = Fundme.getVersion();
         assertEq(version, 4);
+    }
+
+    function testfundsfailwithoutenoguheth() public {
+        vm.expectRevert();
+        Fundme.fund();
+    }
+
+    function testfundupdatesfundeddatastructure() public {
+        vm.prank(USER);
+
+        Fundme.fund{value: SEND_VALUE}();
+        uint256 amountfunded = Fundme.getaddresstoamountfunded(USER);
+        assertEq(amountfunded, SEND_VALUE);
     }
     
 }
