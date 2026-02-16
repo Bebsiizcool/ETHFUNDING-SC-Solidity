@@ -24,7 +24,7 @@ contract fundmetest is Test{
         assertEq(Fundme.MINIMUM_USD(), 5e18);
     }
     function testowner() public view{
-        assertEq(Fundme.i_owner(), msg.sender);
+        assertEq(Fundme.getowner(), msg.sender);
     }
 
     function testpricefeedversionisaccurate() public view{
@@ -43,6 +43,62 @@ contract fundmetest is Test{
         Fundme.fund{value: SEND_VALUE}();
         uint256 amountfunded = Fundme.getaddresstoamountfunded(USER);
         assertEq(amountfunded, SEND_VALUE);
+    }
+
+    function addfundertoarray() public{
+        vm.prank(USER);
+        Fundme.fund{value: SEND_VALUE}();
+        address funder = Fundme.getfunder(0);
+        assertEq(funder, USER);
+    }
+
+
+    modifier funded(){
+        vm.prank(USER);
+        Fundme.fund{value: SEND_VALUE}();
+        _;
+    }
+
+
+    function testonlyownercanwithdraw() public funded{
+        
+        vm.expectRevert();
+        vm.prank(USER);
+        Fundme.withdraw();
+    }
+
+    function testwithdraw() public funded{
+        uint256 startingownerbalance = Fundme.getowner().balance;
+        uint256 startingfundmebalance = address (Fundme).balance;
+
+        vm.prank((Fundme.getowner()));
+        Fundme.withdraw();
+
+        uint256 endingownerbalance = Fundme.getowner().balance;
+        uint256 endingfundmeblance = address(Fundme).balance;
+        assertEq(endingfundmeblance, 0);
+        assertEq(startingfundmebalance + endingfundmeblance, endingownerbalance);
+        
+    }
+
+    function withdrawmultiplefunders () public funded{
+        uint160 numberoffunders = 10;
+        uint160 startingfunderindex = 1;
+
+        for (uint160 i = startingfunderindex; i<numberoffunders; i++){
+            hoax(address(i), SEND_VALUE);
+            Fundme.fund{value:SEND_VALUE}();
+        }
+
+        uint256 endingownerbalance = Fundme.getowner().balance;
+        uint256 endingfundmeblance = address(Fundme).balance;
+
+        vm.startPrank((Fundme.getowner()));
+        Fundme.withdraw();
+        vm.stopPrank();
+
+        assertEq(address(Fundme).balance, 0);
+        assertEq(endingownerbalance + endingfundmeblance, Fundme.getowner().balance);
     }
     
 }
