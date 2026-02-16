@@ -1,0 +1,7 @@
+fundmetest:testfundsfailwithoutenoguheth() (gas: 25146)
+fundmetest:testfundupdatesfundeddatastructure() (gas: 102648)
+fundmetest:testingamount() (gas: 5859)
+fundmetest:testonlyownercanwithdraw() (gas: 102627)
+fundmetest:testowner() (gas: 5973)
+fundmetest:testpricefeedversionisaccurate() (gas: 11351)
+fundmetest:testwithdraw() (gas: 88276)

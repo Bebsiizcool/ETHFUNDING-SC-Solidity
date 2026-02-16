@@ -30,6 +30,19 @@ contract fundme{
         return s_priceFeed.version();
     }
     
+
+    function cheaperwithdraw() public onlyowner{
+        uint256 funderslength = s_funders.length;
+        for(uint256 funderindex = 0; funderindex < funderslength; funderindex++){
+            address funder = s_funders[funderindex];
+            s_addresstoamount[funder] = 0;
+        }
+        s_funders = new address[] (0);
+        (bool callSuccess, ) = payable(msg.sender).call{value: address(this).balance}("");
+        require(callSuccess, "call failed");
+    }
+
+
     function withdraw() public onlyowner{
         
         for(uint256 funderindex = 0; funderindex < s_funders.length; funderindex++){
