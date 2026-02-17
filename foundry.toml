@@ -8,3 +8,5 @@ remappings = ["@chainlink/contracts/=lib/chainlink-brownie-contracts/contracts/"
 # to disable warnings
 [lint]
 lint_on_build = false
+
+ffi = true
